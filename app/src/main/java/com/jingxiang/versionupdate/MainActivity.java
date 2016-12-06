@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
                 bean = MApplication.mCommonDao.selectUpdateBean();
                 if(bean == null || TextUtils.isEmpty(bean.version_code)) return;//如果数据库只能那个无记录, 或者记录的版本号为空 不更新处理
                 int dbVerCode = 0;
-                if(bean != null && TextUtils.isEmpty(bean.version_code))
+                if(bean != null && !TextUtils.isEmpty(bean.version_code))
                     dbVerCode = Integer.parseInt(bean.version_code);
                 int curVerCode =  DeviceInfoManager.getAppVersionCode(mContext);
-                if(bean != null && dbVerCode == curVerCode && dbVerCode > 0){
+                if(bean != null && dbVerCode <= curVerCode && dbVerCode > 0){
                     deleteUpdateDBandFile();
                 }
-                if(bean != null && bean.end == bean.finished && bean.end > 0 && bean.status == 3){ //在下一版中添加这个状态 1未下载 2下载未完成 3下载完成
+                if(dbVerCode > curVerCode && bean != null && bean.end == bean.finished && bean.end > 0 && bean.status == 3){ //在下一版中添加这个状态 1未下载 2下载未完成 3下载完成
                     doUpdateOperate();
                 }
             }

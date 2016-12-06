@@ -27,7 +27,7 @@ public class UpdateService extends Service {
     private Context mContext;
     private DownTask mDownTask;
     private UpdateBean bean;
-
+    private int requestCount = 0;//请求次数
     /************************************/
     @Override
     public void onCreate() {
@@ -37,6 +37,7 @@ public class UpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mContext = this;
+        requestCount = 0;
         if(isPause){ //广播中 如果出现重复的广播，就会导致开启多个updateService 可能会导致异常
             initData(mContext,intent);
             startDownload();
@@ -96,7 +97,6 @@ public class UpdateService extends Service {
         InputStream in = null;
         int respCode = 0;
         long finished = 0;
-        int requestCount = 0;//请求次数
         try {
             URL url = new URL(bean.download_link);
             conn = (HttpURLConnection) url.openConnection();
