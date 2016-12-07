@@ -121,7 +121,6 @@ public class CommonDao implements DaoInterface {
                     bean.intro = cursor.getString(cursor.getColumnIndex("updates"));
                 }
             }
-            LogUtil.e("bean;" + bean);
             return bean;
         }catch (Exception e){
             LogUtil.e("selectUpdateBean e:" + e.getMessage());
@@ -151,7 +150,7 @@ public class CommonDao implements DaoInterface {
             tempResult = db.insert(CommonDB.TABLE_VERSION_UPDATE,null,cv);
             db.setTransactionSuccessful();
         }catch (Exception e){
-            LogUtil.e("e.msg:" + e.getMessage());
+            LogUtil.e("insertUpdateBean e:" + e.getMessage());
         }
         finally {
             db.endTransaction();
@@ -170,7 +169,9 @@ public class CommonDao implements DaoInterface {
             tempResult = db.delete(CommonDB.TABLE_VERSION_UPDATE
                     ,"versionCode=?",new String[]{versionCode});
             db.setTransactionSuccessful();
-        }catch (Exception e){}
+        }catch (Exception e){
+            LogUtil.e("deleteUpdateBean e:" + e.getMessage());
+        }
         finally {
             db.endTransaction();
         }
@@ -187,7 +188,9 @@ public class CommonDao implements DaoInterface {
             tempResult = db.delete(CommonDB.TABLE_VERSION_UPDATE
                     ,null,null);
             db.setTransactionSuccessful();
-        }catch (Exception e){}
+        }catch (Exception e){
+            LogUtil.e("deleteAllUpdateBean e:" + e.getMessage());
+        }
         finally {
             db.endTransaction();
         }
@@ -209,7 +212,9 @@ public class CommonDao implements DaoInterface {
             db.beginTransaction();
             tempResult = db.update(CommonDB.TABLE_VERSION_UPDATE,cv,"versioncode=?",new String[]{bean.version_code});
             db.setTransactionSuccessful();
-        }catch (Exception e){}
+        }catch (Exception e){
+            LogUtil.e("updateUpdateBean e:" + e.getMessage());
+        }
         finally {
             db.endTransaction();
         }

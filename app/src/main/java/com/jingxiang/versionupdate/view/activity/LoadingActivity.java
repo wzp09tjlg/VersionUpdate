@@ -14,6 +14,7 @@ import com.jingxiang.versionupdate.MApplication;
 import com.jingxiang.versionupdate.MainActivity;
 import com.jingxiang.versionupdate.R;
 import com.jingxiang.versionupdate.network.parse.UpdateBean;
+import com.jingxiang.versionupdate.util.CommonHelper;
 import com.jingxiang.versionupdate.util.FinalUtil;
 import com.jingxiang.versionupdate.util.LogUtil;
 import com.squareup.okhttp.Callback;
@@ -73,7 +74,10 @@ public class LoadingActivity extends Activity {
 
     private void initData(){
         mContext = this;
-        String tempUrl= FinalUtil.HOST_UPDATE + "?app_version=10&app_channel=Huasheng";
+        int curVersionCode = CommonHelper.getVersionCode(mContext);
+        String tempUrl= FinalUtil.HOST_UPDATE + "?app_version=" + curVersionCode + "&app_channel=Huasheng";
+
+        //使用OkHttp 框架请求服务 获取版本更新的信息
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(tempUrl).build();
         client.newCall(request).enqueue(getCallBackListener());
@@ -100,23 +104,24 @@ public class LoadingActivity extends Activity {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                byte[] data = null;
+                String tempData = "";
                 try{
                     ResponseBody body = response.body();
                     if(body != null)
-                        data =  body.bytes();
+                        tempData = new String(body.bytes());
                 }catch (Exception e){
-                    LogUtil.e("Exception: data is null:" + e.getMessage() +"  --> " + (data == null) + "  response:" + response.toString());
+                    LogUtil.e("Exception: data is null:" + e.getMessage() +"  --> " + (TextUtils.isEmpty(tempData)) + "  response:" + response.toString());
                 }
-                if(data == null) return;
+                if(TextUtils.isEmpty(tempData)) return;
                 try{
-                    JSONObject jsonObject = new JSONObject(new String(data));
+                    JSONObject jsonObject = new JSONObject(tempData);
                     Object tempObject = jsonObject.get("data");
                     Gson tempGson = new Gson();
                     UpdateBean bean = tempGson.fromJson(tempObject.toString(), UpdateBean.class);
                     checkUpdate(bean);
-                }catch (Exception e){}
-
+                }catch (Exception e){
+                    LogUtil.e("e.msg:" + e.getMessage());
+                }
             }
         };
         return listener;

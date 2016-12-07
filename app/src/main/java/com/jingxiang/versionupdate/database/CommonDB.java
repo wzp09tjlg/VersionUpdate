@@ -15,7 +15,6 @@ import com.jingxiang.versionupdate.util.LogUtil;
  * 3.查看源码得知,在每次操作数据库的时候并不一定要关闭数据库,每次多去数据库时都会进行处理。
  *   这样可以减少打开和关闭数据库的资源消耗,但是游标记得一定得关闭.不然会会耗费大量资源,
  *   也会出现错误.
- * 4.册数数据库的升级操作 版本1 只有表news 版本2 添加表video 版本3 添加表version_update
  */
 public class CommonDB extends SQLiteOpenHelper {
     /** Data */
